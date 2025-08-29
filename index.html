@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김영업의 디지털 명함</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            margin: 1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #777;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        #saveContactBtn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #saveContactBtn:hover {
+            background-color: #0056b3;
+        }
+
+        #statusMessage {
+            display: none;
+            color: green;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #saveContactBtn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>김영업의 디지털 명함</h1>
+        <p>아래 버튼을 눌러 연락처를 바로 저장하세요!</p>
+        <button id="saveContactBtn">연락처 저장하기</button>
+        <p id="statusMessage">연락처 저장이 시작되었습니다!</p>
+    </div>
+
+    <script>
+        document.getElementById('saveContactBtn').addEventListener('click', function() {
+            // vCard 데이터 (한글 및 UTF-8 지원)
+            const vCardData = `BEGIN:VCARD
+VERSION:3.0
+N:김;영업;;;
+FN:김영업
+TEL;TYPE=CELL:+82-10-1234-5678
+EMAIL;TYPE=WORK:kim.sales@example.com
+ORG:미래 영업 컨설팅
+TITLE:총괄 본부장
+ADR;TYPE=WORK:;;서울특별시 강남구 테헤란로 123;서울;;06123;대한민국
+URL:https://example.com
+NOTE:영업 컨설팅 전문가
+END:VCARD`;
+
+            // Blob 생성 (UTF-8 인코딩 명시)
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+
+            // 동적 <a> 태그로 연락처 저장 트리거
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = '김영업_연락처.vcf'; // 모바일에서는 무시될 수 있음
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            // 사용자 피드백
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.style.display = 'block';
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
